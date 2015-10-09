@@ -6,7 +6,7 @@ Usage:
     def my_config(binder):
         binder.bind(Cache, RedisCache('localhost:1234'))
         binder.bind_to_provider(CurrentUser, get_current_user)
-    
+
 - Create a shared injector::
     inject.configure(my_config)
 
@@ -45,31 +45,31 @@ In tests use `inject.clear_and_configure(callable)` to create a new injector on 
 and `inject.clear()` to clean-up on tear down.
 
 Runtime bindings greatly reduce the required configuration by automatically creating singletons
-on first access. For example, below only the Config class requires binding configuration, 
+on first access. For example, below only the Config class requires binding configuration,
 all other classes are runtime bindings::
     class Cache(object):
         config = inject.attr(Config)
-        
+
         def __init__(self):
             self._redis = connect(self.config.redis_address)
-    
+
     class Db(object):
         pass
-    
+
     class UserRepo(object):
         cache = inject.attr(Cache)
         db = inject.attr(Db)
-        
+
         def load(self, user_id):
             return cache.load('user', user_id) or db.load('user', user_id)
-    
+
     class Config(object):
         def __init__(self, redis_address):
             self.redis_address = redis_address
-    
+
     def my_config(binder):
         binder.bind(Config, load_config_file())
-    
+
     inject.configure(my_config)
 
 """
@@ -86,7 +86,7 @@ from functools import wraps
 logger = logging.getLogger('inject')
 
 _INJECTOR = None  # Shared injector instance.
-_INJECTOR_LOCK = threading.RLock()  # Guards injector initialization. 
+_INJECTOR_LOCK = threading.RLock()  # Guards injector initialization.
 _BINDING_LOCK = threading.RLock()  # Guards runtime bindings.
 
 
@@ -154,9 +154,9 @@ def param(name, cls=None):
 
 def params(**args_to_classes):
     """Return a decorator which injects args into a function.
-    
+
     For example::
-    
+
         @inject.params(cache=RedisCache, db=DbInterface)
         def sign_up(name, email, cache, db):
             pass
@@ -304,7 +304,7 @@ class _ParameterInjection(object):
 
 
 class _ParametersInjection(object):
-    __slots__ = ('_params', )
+    __slots__ = ('_params',)
 
     def __init__(self, **kwargs):
         self._params = kwargs
